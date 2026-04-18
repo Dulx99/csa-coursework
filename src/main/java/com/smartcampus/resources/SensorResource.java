@@ -32,7 +32,7 @@ public class SensorResource {
                     .build();
         }
 
-        // Integrity check: Ensure roomId exists
+        // Making sure the room actually exists before linking the sensor
         String roomId = sensor.getRoomId();
         if (roomId == null) {
             throw new LinkedResourceNotFoundException("Room ID must be provided to register a sensor.");
@@ -40,7 +40,7 @@ public class SensorResource {
 
         Room targetRoom = dataService.getRooms().get(roomId);
         if (targetRoom == null) {
-            // Throw custom exception which maps to 422 Unprocessable Entity
+            // Throwing our custom exception that will get picked up by the 422 ExceptionMapper
             throw new LinkedResourceNotFoundException("Validation failed: The provided roomId '" + roomId + "' does not exist.");
         }
 
@@ -54,7 +54,7 @@ public class SensorResource {
         // Register the sensor
         dataService.getSensors().put(sensor.getId(), sensor);
 
-        // Update the Room's nested list of sensor IDs
+        // Keep the room's sensor list in sync
         targetRoom.getSensorIds().add(sensor.getId());
 
         return Response.status(Response.Status.CREATED).entity(sensor).build();

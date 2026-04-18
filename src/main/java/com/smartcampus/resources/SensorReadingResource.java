@@ -29,7 +29,7 @@ public class SensorReadingResource {
      */
     @GET
     public List<SensorReading> getReadings() {
-        // According to the spec, the sub resource is accessed at {sensorId}/readings
+        // The sub-resource is accessed dynamically based on the sensorId we got from the parent class
         // If the sensor doesn't exist we could throw a 404, but we'll just return the history (empty list)
         return dataService.getReadings(sensorId);
     }
@@ -47,17 +47,17 @@ public class SensorReadingResource {
                     .build();
         }
 
-        // State Constraint (403 Forbidden)
+        // State Constraint (403 Forbidden) check
         if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus())) {
             throw new SensorUnavailableException("Sensor is currently in MAINTENANCE mode and cannot accept new readings.");
         }
 
-        // Ensure reading has a value and ID set
+        // If the client only sent the raw double value without an ID, let's create a healthy object
         if (reading.getId() == null || reading.getId().isEmpty()) {
             reading = new SensorReading(reading.getValue());
         }
 
-        // Append the reading. DataService.addReading automatically updates the parent sensor's currentValue.
+        // Saving the reading and handling the parent's currentValue side-effect dynamically via addReading()
         dataService.addReading(sensorId, reading);
 
         return Response.status(Response.Status.CREATED).entity(reading).build();

@@ -10,7 +10,9 @@ import jakarta.ws.rs.ApplicationPath;
 @ApplicationPath("/api/v1")
 public class AppConfig extends ResourceConfig {
     public AppConfig() {
-        // Register the package containing the resource classes
-        packages("com.smartcampus.resources");
+        // Register the packages containing our resources, exceptions, and filters
+        packages("com.smartcampus.resources", 
+                 "com.smartcampus.exceptions", 
+                 "com.smartcampus.filters");
     }
 }

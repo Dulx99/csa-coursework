@@ -36,7 +36,7 @@ public class SensorRoomResource {
                     .build();
         }
         
-        // Simple duplicate check
+        // Make sure we aren't overwriting an existing room
         if (dataService.getRooms().containsKey(room.getId())) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("Room with this ID already exists.")
@@ -44,7 +44,13 @@ public class SensorRoomResource {
         }
 
         dataService.getRooms().put(room.getId(), room);
-        return Response.status(Response.Status.CREATED).entity(room).build();
+        
+        // Creating URI for the Location header to be returned with 201 Created
+        java.net.URI locationUri = jakarta.ws.rs.core.UriBuilder.fromPath("/api/v1/rooms/{roomId}")
+                .resolveTemplate("roomId", room.getId())
+                .build();
+                
+        return Response.created(locationUri).entity(room).build();
     }
 
     /**
@@ -75,14 +81,15 @@ public class SensorRoomResource {
                     .build();
         }
 
-        // Business Logic Constraint: Cannot delete a room if it has active sensors.
+        // Check if room has any nested sensors so we don't end up with data orphans.
         boolean hasSensors = dataService.getSensors().values().stream()
                 .anyMatch(sensor -> roomId.equals(sensor.getRoomId()));
                 
         if (hasSensors) {
-            throw new com.smartcampus.exceptions.RoomNotEmptyException("Cannot delete room: It is currently occupied by active hardware.");
+            throw new com.smartcampus.exceptions.RoomNotEmptyException("Cannot delete room: It's still occupied by active hardware.");
         }
 
+        // Safe to remove now
         dataService.getRooms().remove(roomId);
         return Response.noContent().build();
     }
