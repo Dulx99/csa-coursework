@@ -29,4 +29,17 @@ public class DiscoveryResource {
         
         return info;
     }
+
+    /**
+     * Demo endpoint to trigger an intentional 500 error.
+     * This proves the GenericExceptionMapper catches unexpected exceptions
+     * and returns a safe JSON response — no raw stack trace exposed to the client.
+     */
+    @GET
+    @Path("/error-test")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> triggerError() {
+        // Simulating an unexpected server-side failure (e.g., a bug in production code)
+        throw new RuntimeException("Simulated unexpected server error for demonstration purposes.");
+    }
 }
