@@ -3,7 +3,7 @@
 **Module:** 5COSC022W Client-Server Architectures  
 **Student:** Dulina Sampath  
 **Student ID:** W2120333  
-**GitHub Repository:** https://github.com/Dulx99/csa-coursework
+**GitHub Repository:** https://github.com/Dulx99/Smart_Campus_API_Dulina-Sampath_w2120333_CSA_CW
 
 ---
 
@@ -21,8 +21,8 @@ You will need **JDK 17** installed. Maven is used to manage dependencies and run
 
 **Step 1 — Clone the repository:**
 ```bash
-git clone https://github.com/Dulx99/csa-coursework.git
-cd "csa coursework"
+git clone https://github.com/Dulx99/Smart_Campus_API_Dulina-Sampath_w2120333_CSA_CW.git
+cd Smart_Campus_API_Dulina-Sampath_w2120333_CSA_CW
 ```
 
 **Step 2 — Compile:**
